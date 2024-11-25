@@ -46,7 +46,7 @@ A lightweight and user-friendly web application to extract text from images usin
 └── README.md         # Documentation for the project<br>
 
 ## **Demo**
-You can try a live version of the application here: [Image Text Extractor Demo](#)  
+You can try a live version of the application here: [Image Text Extractor Demo](https://ayushgorlawar.github.io/Image-Text-Extractor---Watermark-Removal/)  
 
 ## **Contact**
 For questions or feedback, feel free to contact:
