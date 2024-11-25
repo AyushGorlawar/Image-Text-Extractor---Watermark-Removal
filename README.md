@@ -40,10 +40,10 @@ A lightweight and user-friendly web application to extract text from images usin
 ---
 ## File Structure
 
-├── index.html        # Main HTML file for the application
-├── style.css         # Styling for the application
-├── script.js         # JavaScript logic for text recognition
-└── README.md         # Documentation for the project
+├── index.html        # Main HTML file for the application <br>
+├── style.css         # Styling for the application <br>
+├── script.js         # JavaScript logic for text recognition<br>
+└── README.md         # Documentation for the project<br>
 
 ## **Demo**
 You can try a live version of the application here: [Image Text Extractor Demo](#)  
