@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Text Extractor</title>
+    <style>
+     
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(120deg, #d2e4ff, #73a9ff);
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #d3e0ff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        .container::before, 
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, #4caf50, transparent);
+            top: 0;
+            left: 25%;
+            border-radius: 50%;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #000319;
+            margin-bottom: 20px;
+        }
+
+        #imageInput {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 12px;
+            border: 2px solid #3f05ff;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #dfebff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #imageInput:hover {
+            background-color: #eef7ee;
+            border-color: #4caf50;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            border: 2px solid #0048ff;
+            border-radius: 8px;
+            background: #f4f4f4;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e5ffef;
+            border: 2px solid #04ff00;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            color: #333;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        #output span {
+            font-weight: bold;
+            color: #000000;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 22px;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: #000000;
+            border-top: 2px solid #0099ff;
+            box-shadow: 0px -2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        footer a {
+            text-decoration: none;
+            color: #4caf50;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Text Extractor</h1>
+
+        <input type="file" id="imageInput" accept="image/*">
+        <canvas id="imageCanvas"></canvas>
+        <div id="output">Recognized Text Will Appear Here</div>
+    </div>
+
+    <footer>
+        &copy; 2024 <a href="#">Ayush-Abhijit</a> All rights reserved.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2/dist/tesseract.min.js"></script>
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+        const output = document.getElementById('output');
+    
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const img = new Image();
+                img.onload = () => {
+                    // Set canvas size to match image
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+    
+                    // Draw image on canvas
+                    ctx.drawImage(img, 0, 0);
+    
+                    // Optional: Apply filters to improve text visibility
+                    ctx.filter = 'contrast(150%) brightness(120%)';
+                    ctx.drawImage(img, 0, 0);
+    
+                    // Display "Processing..." message
+                    output.innerHTML = `<span>Processing... 0%</span>`;
+    
+                    // Extract text using Tesseract.js with progress
+                    Tesseract.recognize(canvas, 'eng', {
+                        logger: (info) => {
+                            if (info.status === 'recognizing text') {
+                                const progress = Math.round(info.progress * 100);
+                                output.innerHTML = `<span>Processing... ${progress}%</span>`;
+                            }
+                        }
+                    })
+                    .then(({ data: { text } }) => {
+                        output.innerHTML = `<span>Recognized Text:</span> ${text}`;
+                    })
+                    .catch(err => {
+                        output.textContent = `Error: ${err.message}`;
+                    });
+                };
+                img.src = URL.createObjectURL(file);
+            }
+        });
+    </script>
+    
+</body>
+</html>
